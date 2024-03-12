@@ -9,7 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { isValidHttpUrl } from "../../utils/url.ts";
 import { resolveUrl } from "../../server.ts";
-import { UrlUnavailable } from "./UrlUnavailable.tsx";
+import { NoResource } from "./NoResource.tsx";
 import { FileResource } from "./FileResource.tsx";
 import { FolderResource } from "./FolderResource.tsx";
 
@@ -40,7 +40,7 @@ export function UrlChecker() {
             <FileResource styles={{ color: theme.palette.success.main }} />
           )}
           {resource === undefined && loadingState === "success" && (
-            <UrlUnavailable styles={{ color: theme.palette.error.main }} />
+            <NoResource styles={{ color: theme.palette.error.main }} />
           )}
         </Box>
       </Box>
