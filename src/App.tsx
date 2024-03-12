@@ -1,5 +1,5 @@
 import { AppBar, Box, Container, Toolbar, Typography } from "@mui/material";
-import { UrlChecker } from "./UrlChecker.tsx";
+import { UrlChecker } from "./features/url-checker/UrlChecker.tsx";
 
 function App() {
   return (
