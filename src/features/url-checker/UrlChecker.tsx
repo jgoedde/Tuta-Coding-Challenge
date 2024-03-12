@@ -16,8 +16,7 @@ import { FolderResource } from "./FolderResource.tsx";
 export function UrlChecker() {
   const [value, setValue] = useState("");
 
-  const [url] = useDebouncedValue(value, 500);
-  const { loadingState, resource } = useResourceType(url);
+  const { loadingState, resource } = useResourceType(value);
 
   const theme = useTheme();
 
@@ -49,16 +48,21 @@ export function UrlChecker() {
   );
 }
 
-function useResourceType(url: string) {
+function useResourceType(rawInput: string) {
+  const [url] = useDebouncedValue(rawInput, 500);
+
   const [resource, setResource] = useState<"folder" | "file">();
   const [loadingState, setLoadingState] = useState<
     "initial" | "pending" | "success"
   >("initial");
 
-  const load = useCallback(async () => {
+  // Reset when input changes and in theory, cancel ongoing fetch/xhr requests
+  useEffect(() => {
     setLoadingState("initial");
     setResource(undefined);
+  }, [rawInput]);
 
+  const load = useCallback(async () => {
     if (!isValidHttpUrl(url)) {
       return;
     }
