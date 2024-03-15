@@ -5,7 +5,7 @@ import {
   TextField,
   useTheme,
 } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { isValidHttpUrl } from "../../utils/url.ts";
 import { resolveUrl } from "../../server.ts";
@@ -62,20 +62,38 @@ function useResourceType(rawInput: string) {
     setResource(undefined);
   }, [rawInput]);
 
-  const load = useCallback(async () => {
-    if (!isValidHttpUrl(url)) {
-      return;
-    }
-    setLoadingState("pending");
-    const resourceResult = await resolveUrl(url);
-    setLoadingState("success");
-
-    setResource(resourceResult.resourceType);
-  }, [url]);
-
   useEffect(() => {
+    let isCancelled = false;
+
+    setLoadingState("initial");
+    setResource(undefined);
+
+    const load = async () => {
+      if (!isValidHttpUrl(url)) {
+        return;
+      }
+
+      console.log("Calling API with url " + url);
+      setLoadingState("pending");
+      const resourceResult = await resolveUrl(url);
+      console.log("API responded with url " + url);
+      if (!isCancelled) {
+        console.log(
+          "Found " + JSON.stringify(resourceResult) + " for url " + url,
+        );
+        setLoadingState("success");
+        setResource(resourceResult.resourceType);
+      } else {
+        console.log("Input already changed! Not updating state for url " + url);
+      }
+    };
+
     void load();
-  }, [load]);
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [url]);
 
   return {
     resource,
