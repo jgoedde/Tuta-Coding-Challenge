@@ -73,18 +73,11 @@ function useResourceType(rawInput: string) {
         return;
       }
 
-      console.log("Calling API with url " + url);
       setLoadingState("pending");
       const resourceResult = await resolveUrl(url);
-      console.log("API responded with url " + url);
       if (!isCancelled) {
-        console.log(
-          "Found " + JSON.stringify(resourceResult) + " for url " + url,
-        );
         setLoadingState("success");
         setResource(resourceResult.resourceType);
-      } else {
-        console.log("Input already changed! Not updating state for url " + url);
       }
     };
 
